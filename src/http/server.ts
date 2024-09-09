@@ -5,5 +5,5 @@ const app = new Elysia().get('/', () => {
 });
 
 app.listen(3333, () => {
-  console.log('✅ HTTP server is running!');
+  console.log('🚀 HTTP server is running!');
 });

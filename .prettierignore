@@ -1,0 +1,10 @@
+# Ignore artifacts:
+build
+coverage
+drizzle
+
+node_modules
+dist
+dist-ssr
+*.local
+.vscode/*
