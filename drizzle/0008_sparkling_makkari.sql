@@ -1,0 +1,1 @@
+ALTER TABLE "auth_links" DROP COLUMN IF EXISTS "expiration_at";

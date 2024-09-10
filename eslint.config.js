@@ -1,7 +1,10 @@
+// @ts-check
 /** @type { import("eslint").Linter.Config[] } */
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
+import typescriptEslintParser from '@typescript-eslint/parser';
 
 export default [
   eslintConfigPrettier,
@@ -11,9 +14,11 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      parser: typescriptEslintParser,
     },
     plugins: {
       'simple-import-sort': simpleImportSort,
+      '@typescript-eslint': typescriptEslintPlugin,
     },
     rules: {
       'no-unused-vars': ['warn'],

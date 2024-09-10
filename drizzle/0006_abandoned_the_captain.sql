@@ -1,0 +1,1 @@
+ALTER TABLE "auth_links" ADD COLUMN "expiration_at" timestamp DEFAULT '2024-09-10 00:20:00.529' NOT NULL;

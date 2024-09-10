@@ -1,0 +1,1 @@
+ALTER TABLE "auth_links" ALTER COLUMN "expiration_at" SET DEFAULT '2024-09-10 01:40:05.257';
