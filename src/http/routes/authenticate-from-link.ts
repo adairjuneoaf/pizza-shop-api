@@ -12,23 +12,33 @@ export const authenticateFromLink = new Elysia().use(auth).get(
   async ({ jwt, query, cookie, redirect }) => {
     const { code, redirect: urlToRedirect } = query;
     const { sign } = jwt;
-    console.log(urlToRedirect);
 
-    const [authLinkFromCode] = await db.select().from(authLinks).where(eq(authLinks.code, code));
+    const [authLinkFromCode] = await db
+      .select()
+      .from(authLinks)
+      .where(eq(authLinks.code, code));
 
     if (!authLinkFromCode) {
       throw new Error('Auth link not found.');
     }
 
-    const authLinksIsExpired = dayjs().diff(authLinkFromCode.createdAt, 'seconds') >= env.AUTH_KEY_EXPIRATION_SECONDS;
+    const authLinksIsExpired =
+      dayjs().diff(authLinkFromCode.createdAt, 'seconds') >=
+      env.AUTH_KEY_EXPIRATION_SECONDS;
 
     if (authLinksIsExpired) {
       throw new Error('Auth link is expired, please generate a new one.');
     }
 
-    const [managerRestaurant] = await db.select().from(restaurants).where(eq(restaurants.managerId, authLinkFromCode.userId));
+    const [managerRestaurant] = await db
+      .select()
+      .from(restaurants)
+      .where(eq(restaurants.managerId, authLinkFromCode.userId));
 
-    const token = await sign({ sub: authLinkFromCode.userId, restaurantId: managerRestaurant?.id });
+    const token = await sign({
+      sub: authLinkFromCode.userId,
+      restaurantId: managerRestaurant?.id,
+    });
 
     cookie.auth.set({
       path: '/',
@@ -39,7 +49,7 @@ export const authenticateFromLink = new Elysia().use(auth).get(
 
     await db.delete(authLinks).where(eq(authLinks.code, code));
 
-    return redirect(urlToRedirect, 307);
+    // return redirect(urlToRedirect, 307);
   },
   {
     query: t.Object({

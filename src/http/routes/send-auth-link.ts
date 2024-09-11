@@ -11,7 +11,10 @@ export const sendAuthLink = new Elysia().post(
   async ({ body, set }) => {
     const { email } = body;
 
-    const [userFromEmail] = await db.select().from(users).where(eq(users.email, email));
+    const [userFromEmail] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email));
 
     if (!userFromEmail) {
       throw new Error('User not found');
@@ -26,7 +29,7 @@ export const sendAuthLink = new Elysia().post(
 
     // Enviar e-mail
 
-    const authUrl = new URL('/auth-links/authenticate', env.API_BASE_URL);
+    const authUrl = new URL('api/auth-links/authenticate', env.API_BASE_URL);
     authUrl.searchParams.set('code', authLinkCode);
     authUrl.searchParams.set('redirect', env.AUTH_REDIRECT_URL);
 

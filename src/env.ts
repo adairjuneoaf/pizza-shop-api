@@ -16,6 +16,8 @@ const envSchema = z.object({
     .pipe(z.number().min(120).max(600)),
 });
 
-console.log(chalk.greenBright('✅ Environment variables initialized with successful!'));
+console.log(
+  chalk.greenBright('✅ Environment variables initialized with successful!'),
+);
 
 export const env = envSchema.parse(process.env);

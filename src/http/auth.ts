@@ -14,4 +14,23 @@ export const auth = new Elysia()
       }),
     }),
   )
-  .use(cookie());
+  .use(cookie())
+  .derive(({ jwt, cookie }) => {
+    return {
+      getCurrentUser: async () => {
+        const authCookie = cookie.auth;
+
+        const payload = await jwt.verify(authCookie.value);
+
+        if (!payload) {
+          throw new Error('Unauthorized');
+        }
+
+        return {
+          userId: payload.sub,
+          restaurantId: payload.restaurantId,
+        };
+      },
+    };
+  })
+  .as('global');

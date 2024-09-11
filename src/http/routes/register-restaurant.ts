@@ -6,7 +6,8 @@ import { restaurants, users } from '../../db/schema';
 export const registerRestaurant = new Elysia().post(
   '/restaurants',
   async ({ body, set }) => {
-    const { restaurantDescription, restaurantName, managerName, email, phone } = body;
+    const { restaurantDescription, restaurantName, managerName, email, phone } =
+      body;
 
     const [manager] = await db
       .insert(users)
