@@ -5,6 +5,7 @@ import Elysia, { t } from 'elysia';
 import db from '../../db/connection';
 import { authLinks, users } from '../../db/schema';
 import { env } from '../../env';
+import { NotFoundError } from '../errors/not-found.error';
 
 export const sendAuthLink = new Elysia().post(
   '/authenticate',
@@ -17,7 +18,7 @@ export const sendAuthLink = new Elysia().post(
       .where(eq(users.email, email));
 
     if (!userFromEmail) {
-      throw new Error('User not found');
+      throw new NotFoundError('User not found');
     }
 
     const authLinkCode = createId();
@@ -38,7 +39,10 @@ export const sendAuthLink = new Elysia().post(
   },
   {
     body: t.Object({
-      email: t.String({ format: 'email' }),
+      email: t.String({
+        format: 'email',
+        error: 'Must be a valid email.',
+      }),
     }),
   },
 );

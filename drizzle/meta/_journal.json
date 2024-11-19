@@ -64,6 +64,13 @@
       "when": 1725933951982,
       "tag": "0008_sparkling_makkari",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1731979807061,
+      "tag": "0009_abnormal_scorpion",
+      "breakpoints": true
     }
   ]
 }

@@ -4,6 +4,7 @@ import { Elysia } from 'elysia';
 import db from '../../db/connection';
 import { users } from '../../db/schema';
 import { auth } from '../auth';
+import { NotFoundError } from '../errors/not-found.error';
 
 export const getProfile = new Elysia()
   .use(auth)
@@ -13,7 +14,7 @@ export const getProfile = new Elysia()
     const [user] = await db.select().from(users).where(eq(users.id, userId));
 
     if (!user) {
-      throw new Error('User not found.');
+      throw new NotFoundError('User not found.');
     }
 
     return { content: user };

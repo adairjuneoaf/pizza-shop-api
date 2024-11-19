@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { eq } from 'drizzle-orm';
-import { Elysia, t } from 'elysia';
+import { Elysia, NotFoundError, t } from 'elysia';
 
 import db from '../../db/connection';
 import { authLinks, restaurants } from '../../db/schema';
@@ -19,7 +19,7 @@ export const authenticateFromLink = new Elysia().use(auth).get(
       .where(eq(authLinks.code, code));
 
     if (!authLinkFromCode) {
-      throw new Error('Auth link not found.');
+      throw new NotFoundError('Auth link not found.');
     }
 
     const authLinksIsExpired =
@@ -27,7 +27,9 @@ export const authenticateFromLink = new Elysia().use(auth).get(
       env.AUTH_KEY_EXPIRATION_SECONDS;
 
     if (authLinksIsExpired) {
-      throw new Error('Auth link is expired, please generate a new one.');
+      throw new NotFoundError(
+        'Auth link is expired, please generate a new one.',
+      );
     }
 
     const [managerRestaurant] = await db
@@ -49,7 +51,7 @@ export const authenticateFromLink = new Elysia().use(auth).get(
 
     await db.delete(authLinks).where(eq(authLinks.code, code));
 
-    // return redirect(urlToRedirect, 307);
+    return redirect(urlToRedirect, 307);
   },
   {
     query: t.Object({
