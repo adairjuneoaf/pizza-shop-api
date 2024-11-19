@@ -9,7 +9,7 @@ export const products = pgTable('products', {
     .$defaultFn(() => createId())
     .primaryKey(),
   name: text('name').notNull(),
-  description: text('name'),
+  description: text('description'),
   priceInCents: integer('price_in_cents').notNull(),
   restaurantId: text('restaurant_id')
     .notNull()
