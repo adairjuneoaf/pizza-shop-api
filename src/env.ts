@@ -14,6 +14,10 @@ const envSchema = z.object({
     .string()
     .transform((str) => parseInt(str))
     .pipe(z.number().min(120).max(600)),
+  PAGINATION_PAGE_SIZE: z
+    .string()
+    .transform((str) => parseInt(str))
+    .pipe(z.number().min(10).max(30)),
 });
 
 console.log(

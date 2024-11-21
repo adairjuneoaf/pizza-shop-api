@@ -11,6 +11,7 @@ import { dispatchOrder } from './routes/dispatch-order';
 import { getRestaurantManaged } from './routes/get-managed-restaurant';
 import { getOrderDetails } from './routes/get-order-details';
 import { getProfile } from './routes/get-profile';
+import { getOrders } from './routes/getOrders';
 import { registerRestaurant } from './routes/register-restaurant';
 import { sendAuthLink } from './routes/send-auth-link';
 import { signOut } from './routes/sign-out';
@@ -18,6 +19,7 @@ import { signOut } from './routes/sign-out';
 const app = new Elysia({ prefix: '/api' });
 
 app
+  .headers({ 'content-type': 'application/json' })
   .use(Logestic.preset('commontz'))
   .use(sendAuthLink)
   .use(authenticateFromLink)
@@ -25,6 +27,7 @@ app
   .use(getProfile)
   .use(registerRestaurant)
   .use(getRestaurantManaged)
+  .use(getOrders)
   .use(getOrderDetails)
   .use(approveOrder)
   .use(cancelOrder)
