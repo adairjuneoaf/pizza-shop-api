@@ -1,7 +1,9 @@
 import { Elysia } from 'elysia';
 import { Logestic } from 'logestic';
 
+import { BadRequestError } from './errors/bad-request.error';
 import { NotFoundError } from './errors/not-found.error';
+import { approveOrder } from './routes/approve-order';
 import { authenticateFromLink } from './routes/authenticate-from-link';
 import { getRestaurantManaged } from './routes/get-managed-restaurant';
 import { getOrderDetails } from './routes/get-order-details';
@@ -21,11 +23,16 @@ app
   .use(registerRestaurant)
   .use(getRestaurantManaged)
   .use(getOrderDetails)
+  .use(approveOrder)
   .error({
     NOT_FOUND: NotFoundError,
+    BAD_REQUEST: BadRequestError,
   })
   .onError(({ error, code, set }) => {
     switch (code) {
+      case 'BAD_REQUEST':
+        set.status = 400;
+        return { code, message: error.message };
       case 'NOT_FOUND':
         set.status = 404;
         return { code, message: error.message };
