@@ -1,4 +1,4 @@
-import { and, count, eq, getTableColumns, ilike } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, ilike, sql } from 'drizzle-orm';
 import { createSelectSchema } from 'drizzle-typebox';
 import { Elysia, t } from 'elysia';
 
@@ -21,7 +21,7 @@ export const getOrders = new Elysia().use(auth).get(
     const orderTableColumns = getTableColumns(orders);
 
     const baseQuery = db
-      .select(orderTableColumns)
+      .select({ ...orderTableColumns, customerName: users.name })
       .from(orders)
       .innerJoin(users, eq(users.id, orders.customerId))
       .where(
@@ -39,7 +39,19 @@ export const getOrders = new Elysia().use(auth).get(
         .select()
         .from(baseQuery.as('baseQueryListOrders'))
         .offset(pageIndex * env.PAGINATION_PAGE_SIZE)
-        .limit(env.PAGINATION_PAGE_SIZE),
+        .limit(env.PAGINATION_PAGE_SIZE)
+        .orderBy((fields) => {
+          return [
+            sql`CASE ${fields.status}
+              WHEN 'pending' THEN 1
+              WHEN 'processing' THEN 2
+              WHEN 'delivering' THEN 3
+              WHEN 'delivered' THEN 4
+              WHEN 'canceled' THEN 99
+            END`,
+            desc(fields.createdAt),
+          ];
+        }),
     ]);
 
     const totalOfOrders = countAllOrdersQuery[0].count;
