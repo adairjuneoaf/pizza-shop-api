@@ -5,6 +5,9 @@ import { BadRequestError } from './errors/bad-request.error';
 import { NotFoundError } from './errors/not-found.error';
 import { approveOrder } from './routes/approve-order';
 import { authenticateFromLink } from './routes/authenticate-from-link';
+import { cancelOrder } from './routes/cancel-order';
+import { deliverOrder } from './routes/deliver-order';
+import { dispatchOrder } from './routes/dispatch-order';
 import { getRestaurantManaged } from './routes/get-managed-restaurant';
 import { getOrderDetails } from './routes/get-order-details';
 import { getProfile } from './routes/get-profile';
@@ -24,6 +27,9 @@ app
   .use(getRestaurantManaged)
   .use(getOrderDetails)
   .use(approveOrder)
+  .use(cancelOrder)
+  .use(deliverOrder)
+  .use(dispatchOrder)
   .error({
     NOT_FOUND: NotFoundError,
     BAD_REQUEST: BadRequestError,
