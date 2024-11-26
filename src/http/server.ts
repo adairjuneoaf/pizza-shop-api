@@ -9,9 +9,10 @@ import { cancelOrder } from './routes/cancel-order';
 import { deliverOrder } from './routes/deliver-order';
 import { dispatchOrder } from './routes/dispatch-order';
 import { getRestaurantManaged } from './routes/get-managed-restaurant';
+import { getMonthRevenue } from './routes/get-month-revenue';
 import { getOrderDetails } from './routes/get-order-details';
+import { getOrders } from './routes/get-orders';
 import { getProfile } from './routes/get-profile';
-import { getOrders } from './routes/getOrders';
 import { registerRestaurant } from './routes/register-restaurant';
 import { sendAuthLink } from './routes/send-auth-link';
 import { signOut } from './routes/sign-out';
@@ -33,6 +34,7 @@ app
   .use(cancelOrder)
   .use(deliverOrder)
   .use(dispatchOrder)
+  .use(getMonthRevenue)
   .error({
     NOT_FOUND: NotFoundError,
     BAD_REQUEST: BadRequestError,
