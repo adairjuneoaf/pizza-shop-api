@@ -8,6 +8,7 @@ import { authenticateFromLink } from './routes/authenticate-from-link';
 import { cancelOrder } from './routes/cancel-order';
 import { deliverOrder } from './routes/deliver-order';
 import { dispatchOrder } from './routes/dispatch-order';
+import { getDayOrdersAmount } from './routes/get-day-orders-amount';
 import { getRestaurantManaged } from './routes/get-managed-restaurant';
 import { getMonthRevenue } from './routes/get-month-revenue';
 import { getOrderDetails } from './routes/get-order-details';
@@ -35,6 +36,7 @@ app
   .use(deliverOrder)
   .use(dispatchOrder)
   .use(getMonthRevenue)
+  .use(getDayOrdersAmount)
   .error({
     NOT_FOUND: NotFoundError,
     BAD_REQUEST: BadRequestError,
