@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, eq, gte, sql, sum } from 'drizzle-orm';
+import { and, count, eq, gte, sql } from 'drizzle-orm';
 import { Elysia } from 'elysia';
 
 import db from '../../db/connection';
@@ -7,9 +7,9 @@ import { orders } from '../../db/schema';
 import { auth } from '../auth';
 import { UnauthorizedError } from '../errors/unauthorized.errors';
 
-export const getMonthRevenue = new Elysia()
+export const getMonthOrdersAmount = new Elysia()
   .use(auth)
-  .get('/metrics/month-revenue', async ({ getCurrentUser }) => {
+  .get('/metrics/month-orders-amount', async ({ getCurrentUser }) => {
     const { restaurantId } = await getCurrentUser();
 
     if (!restaurantId) {
@@ -19,10 +19,10 @@ export const getMonthRevenue = new Elysia()
     const today = dayjs();
     const lastMonthStartingDayOne = today.subtract(1, 'month').startOf('month');
 
-    const monthsRevenue = await db
+    const ordersPerMonth = await db
       .select({
         yearMonth: sql<string>`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`,
-        revenue: sum(orders.totalInCents).mapWith((sum) => Number(sum)),
+        amount: count(),
       })
       .from(orders)
       .where(
@@ -36,25 +36,25 @@ export const getMonthRevenue = new Elysia()
     const currentMonth = today.format('YYYY-MM');
     const lastMonth = today.subtract(1, 'month').format('YYYY-MM');
 
-    const currentMonthRevenue = monthsRevenue.find(
-      (monthRevenue) => monthRevenue.yearMonth === currentMonth,
+    const currentMonthOrders = ordersPerMonth.find(
+      (ordersMonth) => ordersMonth.yearMonth === currentMonth,
     );
-    const lastMonthRevenue = monthsRevenue.find(
-      (monthRevenue) => monthRevenue.yearMonth === lastMonth,
+    const lastMonthOrders = ordersPerMonth.find(
+      (ordersMonth) => ordersMonth.yearMonth === lastMonth,
     );
 
     const percentDifference =
-      currentMonthRevenue && lastMonthRevenue
-        ? (currentMonthRevenue.revenue * 100) / lastMonthRevenue.revenue
+      currentMonthOrders && lastMonthOrders
+        ? (currentMonthOrders.amount * 100) / lastMonthOrders.amount
         : 0;
 
-    const currentRevenue = Number(currentMonthRevenue?.revenue || 0);
+    const amountCurrentMonth = Number(currentMonthOrders?.amount || 0);
     const differenceBetweenMonths = Number(percentDifference.toFixed(2));
 
     return {
       content: {
-        months: monthsRevenue,
-        revenue: currentRevenue,
+        orders: ordersPerMonth,
+        amount: amountCurrentMonth,
         differenceFromLastMonth: differenceBetweenMonths,
       },
     };

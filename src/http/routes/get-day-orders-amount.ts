@@ -21,7 +21,7 @@ export const getDayOrdersAmount = new Elysia()
 
     const ordersPerDay = await db
       .select({
-        dayMonthYear: sql<string>`TO_CHAR(${orders.createdAt}, 'YYYY-MM-DD')`,
+        day: sql<string>`TO_CHAR(${orders.createdAt}, 'YYYY-MM-DD')`,
         amount: count(),
       })
       .from(orders)
@@ -37,10 +37,10 @@ export const getDayOrdersAmount = new Elysia()
     const yesterdayFormatted = yesterday.format('YYYY-MM-DD');
 
     const currentDayAmount = ordersPerDay.find(
-      (dayAmount) => dayAmount.dayMonthYear === todayFormatted,
+      (dayAmount) => dayAmount.day === todayFormatted,
     );
     const yesterdayAmount = ordersPerDay.find(
-      (dayAmount) => dayAmount.dayMonthYear === yesterdayFormatted,
+      (dayAmount) => dayAmount.day === yesterdayFormatted,
     );
 
     const percentDifference =
@@ -48,12 +48,14 @@ export const getDayOrdersAmount = new Elysia()
         ? (currentDayAmount.amount * 100) / yesterdayAmount.amount
         : 0;
 
+    const amountToday = Number(currentDayAmount?.amount || 0);
     const differenceBetweenDays = Number(percentDifference.toFixed(2));
 
     return {
       content: {
         days: ordersPerDay,
-        difference: differenceBetweenDays,
+        amount: amountToday,
+        differenceFromYesterday: differenceBetweenDays,
       },
     };
   });
