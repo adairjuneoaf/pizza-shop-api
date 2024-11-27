@@ -49,7 +49,9 @@ export const getMonthOrdersAmount = new Elysia()
         : 0;
 
     const amountCurrentMonth = Number(currentMonthOrders?.amount || 0);
-    const differenceBetweenMonths = Number(percentDifference.toFixed(2));
+    const differenceBetweenMonths = Number(
+      (percentDifference - 100).toFixed(2),
+    );
 
     return {
       content: {

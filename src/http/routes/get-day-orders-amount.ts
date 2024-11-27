@@ -49,7 +49,7 @@ export const getDayOrdersAmount = new Elysia()
         : 0;
 
     const amountToday = Number(currentDayAmount?.amount || 0);
-    const differenceBetweenDays = Number(percentDifference.toFixed(2));
+    const differenceBetweenDays = Number((percentDifference - 100).toFixed(2));
 
     return {
       content: {
