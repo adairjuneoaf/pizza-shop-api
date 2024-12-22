@@ -6,15 +6,24 @@ import { orders } from '../../db/schema';
 import { auth } from '../auth';
 import { BadRequestError } from '../errors/bad-request.error';
 import { NotFoundError } from '../errors/not-found.error';
+import { UnauthorizedError } from '../errors/unauthorized.errors';
 
 export const dispatchOrder = new Elysia().use(auth).patch(
   '/orders/:orderId/dispatch',
-  async ({ params }) => {
+  async ({ getCurrentUser, params }) => {
     const { orderId } = params;
+    const { restaurantId } = await getCurrentUser();
+
+    if (!restaurantId) {
+      throw new UnauthorizedError();
+    }
 
     const order = await db.query.orders.findFirst({
-      where(fields, { eq }) {
-        return eq(fields.id, orderId);
+      where(fields, { eq, and }) {
+        return and(
+          eq(fields.id, orderId),
+          eq(fields.restaurantId, restaurantId),
+        );
       },
     });
 
